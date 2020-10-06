@@ -6,16 +6,16 @@ EXPOSE 80
 
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1-buster AS build
 WORKDIR /src
-COPY ["PostShare.csproj", ""]
-RUN dotnet restore "./PostShare.csproj"
+COPY ["tp1-restaurant.csproj", ""]
+RUN dotnet restore "./tp1-restaurant.csproj"
 COPY . .
 WORKDIR "/src/."
-RUN dotnet build "PostShare.csproj" -c Release -o /app/build
+RUN dotnet build "tp1-restaurant.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "PostShare.csproj" -c Release -o /app/publish
+RUN dotnet publish "tp1-restaurant.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "PostShare.dll"]
+ENTRYPOINT ["dotnet", "tp1-restaurant.dll"]

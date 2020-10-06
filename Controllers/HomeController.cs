@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using dotenv.net.Utilities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using tp1_restaurant.Models;
@@ -12,14 +10,18 @@ namespace tp1_restaurant.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly EnvReader _envReader;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, [FromServices] EnvReader envReader)
         {
             _logger = logger;
+            _envReader = envReader;
         }
 
         public IActionResult Index()
         {
+            string value = _envReader.GetStringValue("TEST");
+            _logger.LogInformation(value);
             return View();
         }
 

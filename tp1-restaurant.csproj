@@ -9,4 +9,8 @@
     <Folder Include="Data\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="dotenv.net" Version="2.1.1" />
+  </ItemGroup>
+
 </Project>
