@@ -6,35 +6,35 @@ namespace tp1_restaurant.Models {
     public class Reservation {
         public int Id { get; set; }
 
-        [Required(ErrorMessage = "Le champ Prénom est obligatoire.")]
-        [MaxLength(100, ErrorMessage = "Le champ Nom à un maximum de 100 charactères.")]
-        [DisplayName("Prénom")]
+        [Required(ErrorMessage = "Le champ PrÃ©nom est obligatoire.")]
+        [MaxLength(100, ErrorMessage = "Le champ Nom Ã  un maximum de 100 charactÃ¨res.")]
+        [DisplayName("PrÃ©nom")]
         public string Prenom { get; set; }
 
         [Required(ErrorMessage = "Le champ Nom est obligatoire.")]
-        [MaxLength(100, ErrorMessage = "Le champ Nom à un maximum de 100 charactères.")]
+        [MaxLength(100, ErrorMessage = "Le champ Nom Ã  un maximum de 100 charactÃ¨res.")]
         public string Nom { get; set; }
 
-        [Required(ErrorMessage = "Le champ Type de réservation est obligatoire.")]
-        [DisplayName("Type de réservation")]
+        [Required(ErrorMessage = "Le champ Type de rÃ©servation est obligatoire.")]
+        [DisplayName("Type de rÃ©servation")]
         public TypeReservation TypeReservation { get; set; }
 
         [Required(ErrorMessage = "Le champ Courriel est obligatoire.")]
         [DataType(DataType.EmailAddress, ErrorMessage = "Format de Courriel invalide.")]
         public string Courriel { get; set; }
 
-        [Required(ErrorMessage = "Le champ Date et heure de réservation est obligatoire.")]
+        [Required(ErrorMessage = "Le champ Date et heure de rÃ©servation est obligatoire.")]
         [DataType(DataType.DateTime, ErrorMessage = "Format de Date invalide.")]
-        [DisplayName("Date et heure de réservation")]
+        [DisplayName("Date et heure de rÃ©servation")]
         public DateTime DateHeureReservation { get; set; }
 
-        [Required(ErrorMessage = "Le champ Numéro de téléphone est obligatoire.")]
-        [DataType(DataType.PhoneNumber, ErrorMessage = "Format de Numéro de téléphone invalide.")]
-        [DisplayName("Numéro de téléphone")]
+        [Required(ErrorMessage = "Le champ Numï¿½ro de tÃ©lÃ©phone est obligatoire.")]
+        [DataType(DataType.PhoneNumber, ErrorMessage = "Format de NumÃ©ro de tÃ©lÃ©phone invalide.")]
+        [DisplayName("NumÃ©ro de tÃ©lÃ©phone")]
         public string NumeroTelephone { get; set; }
 
         [Required(ErrorMessage = "Le champ Nombre de personnes est obligatoire.")]
-        [Range(1, Int32.MaxValue, ErrorMessage = "Le Nombre de personnes doit être de minimum de 1.")]
+        [Range(1, Int32.MaxValue, ErrorMessage = "Le Nombre de personnes doit Ãªtre de minimum de 1.")]
         [DisplayName("Nombre de personnes")]
         public int NombrePersonnes { get; set; }
     }
