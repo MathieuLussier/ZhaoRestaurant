@@ -1,0 +1,77 @@
+﻿@model tp1_restaurant.Models.Reservation
+
+<form asp-action="Create" asp-controller="Reservation" asp-route-redirectToHome="true" method="post">
+	<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+	<div class="row mb-4">
+		<div class="form-group col-md-4">
+			<label asp-for="Prenom" class="label"></label>
+			<div class="form-field-icon-wrap">
+				<span class="icon ion-android-person"></span>
+				<input asp-for="Prenom" class="form-control">
+			</div>
+			<span asp-validation-for="NombrePersonnes" class="text-danger"></span>
+		</div>
+		<div class="form-group col-md-4">
+			<label asp-for="Nom" class="label"></label>
+			<div class="form-field-icon-wrap">
+				<span class="icon ion-android-person"></span>
+				<input asp-for="Nom" class="form-control">
+			</div>
+			<span asp-validation-for="NombrePersonnes" class="text-danger"></span>
+		</div>
+		<div class="form-group col-md-4">
+			<label asp-for="Courriel" class="label"></label>
+			<div class="form-field-icon-wrap">
+				<span class="icon ion-email"></span>
+				<input asp-for="Courriel" class="form-control">
+			</div>
+			<span asp-validation-for="NombrePersonnes" class="text-danger"></span>
+		</div>
+
+		<div class="form-group col-md-4">
+			<label asp-for="NumeroTelephone" class="label"></label>
+			<div class="form-field-icon-wrap">
+				<span class="icon ion-android-call"></span>
+				<input asp-for="NumeroTelephone" class="form-control">
+			</div>
+			<span asp-validation-for="NombrePersonnes" class="text-danger"></span>
+		</div>
+
+		<div class="form-group col-md-4">
+			<label asp-for="TypeReservation" class="label"></label>
+			<div class="form-field-icon-wrap">
+				<span class="icon ion-android-arrow-dropdown"></span>
+				<select asp-for="TypeReservation" asp-items="Html.GetEnumSelectList<TypeReservation>()" class="form-control">
+					<option selected="selected" value="">Type Réservation</option>
+				</select>
+			</div>
+			<span asp-validation-for="NombrePersonnes" class="text-danger"></span>
+		</div>
+
+		<div class="form-group col-md-4">
+			<label asp-for="DateHeureReservation" class="label"></label>
+			<div class="form-field-icon-wrap">
+				<input asp-for="DateHeureReservation" class="form-control">
+			</div>
+			<span asp-validation-for="NombrePersonnes" class="text-danger"></span>
+		</div>
+
+		<div class="form-group col-md-4"></div>
+
+		<div class="form-group col-md-4">
+			<label asp-for="NombrePersonnes" class="label"></label>
+			<div class="form-field-icon-wrap">
+				<input asp-for="NombrePersonnes" class="form-control" />
+			</div>
+			<span asp-validation-for="NombrePersonnes" class="text-danger"></span>
+		</div>
+
+		<div class="form-group col-md-4"></div>
+
+	</div>
+	<div class="row justify-content-center">
+		<div class="col-md-4">
+			<input type="submit" class="btn btn-primary btn-outline-primary btn-block" value="Réservez maintenant">
+		</div>
+	</div>
+</form>

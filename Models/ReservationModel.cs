@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace tp1_restaurant.Models {
     public class Reservation {
+        public int Id { get; set; }
 
         [Required(ErrorMessage = "Le champ Prénom est obligatoire.")]
         [MaxLength(100, ErrorMessage = "Le champ Nom à un maximum de 100 charactères.")]
@@ -23,6 +24,7 @@ namespace tp1_restaurant.Models {
         public string Courriel { get; set; }
 
         [Required(ErrorMessage = "Le champ Date et heure de réservation est obligatoire.")]
+        [DataType(DataType.DateTime, ErrorMessage = "Format de Date invalide.")]
         [DisplayName("Date et heure de réservation")]
         public DateTime DateHeureReservation { get; set; }
 
@@ -32,6 +34,7 @@ namespace tp1_restaurant.Models {
         public string NumeroTelephone { get; set; }
 
         [Required(ErrorMessage = "Le champ Nombre de personnes est obligatoire.")]
+        [Range(1, Int32.MaxValue, ErrorMessage = "Le Nombre de personnes doit être de minimum de 1.")]
         [DisplayName("Nombre de personnes")]
         public int NombrePersonnes { get; set; }
     }

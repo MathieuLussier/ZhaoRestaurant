@@ -32,18 +32,20 @@ AOS.init({
   // navigation
   var OnePageNav = function() {
     var navToggler = $('.js-site-nav-toggle');
-    $(".smoothscroll[href^='#'], #ftco-navbar ul li a[href^='#']").on('click', function(e) {
+    $(".smoothscroll[href*='#'], #ftco-navbar ul li a[href*='#']").on('click', function(e) {
       e.preventDefault();
-      var hash = this.hash;
-        
+        var hash = this.hash;
+        var pathname = this.pathname;
       $('html, body').animate({
-
-        scrollTop: $(hash).offset().top
-      }, 700, 'easeInOutExpo', function(){
+          scrollTop: $(hash).offset().top
+      }, 700, 'easeInOutExpo', function () {
+              if (window.location.pathname !== pathname) {
+           window.location.pathname = pathname;
+        }
         window.location.hash = hash;
       });
     });
-    $("#ftco-navbar ul li a[href^='#']").on('click', function(e){
+    $("#ftco-navbar ul li a[href*='#']").on('click', function(e){
       if ( navToggler.is(':visible') ) {
         navToggler.click();
       }

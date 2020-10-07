@@ -1,14 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 
-
 namespace tp1_restaurant.Models
 {
-    public enum TypeReservation
+    public enum TypePromotion
     {
+        Comptoir,
         [Description("Salle à manger")]
         SalleManger,
-        [Description("Salon privé")]
-        SalonPrive
+        Livraison,
+        Tous
     }
 }

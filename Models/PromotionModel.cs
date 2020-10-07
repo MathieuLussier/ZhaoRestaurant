@@ -1,11 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace tp1_restaurant.Models
 {
-    public class PromotionModel
+    public class Promotion
     {
+        public int Id { get; set; }
+
+        [Required(ErrorMessage = "Le champ Type de promotion est obligatoire.")]
+        [DisplayName("Type de promotion")]
+        public TypePromotion TypePromotion { get; set; }
+
+        [Required(ErrorMessage = "Le champ Taux applicable est obligatoire.")]
+        [DisplayName("Taux applicable")]
+        public int TauxApplicable { get; set; }
+
+        [Required(ErrorMessage = "Le champ Description de la promotion est obligatoire.")]
+        [MaxLength(300, ErrorMessage = "Le champ Description de la promotion à un maximum de 300 charactères.")]
+        public string DescriptionPromotion { get; set; }
+
+        [Required(ErrorMessage = "Le champ Date de début est obligatoire.")]
+        [DataType(DataType.Date, ErrorMessage = "Format de Date invalide.")]
+        [DisplayName("Date de début")]
+        public DateTime DateDebut { get; set; }
+
+        [DataType(DataType.Date, ErrorMessage = "Format de Date invalide.")]
+        [DisplayName("Date de fin")]
+        public DateTime DateFin { get; set; }
     }
 }

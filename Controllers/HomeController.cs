@@ -20,8 +20,6 @@ namespace tp1_restaurant.Controllers
 
         public IActionResult Index()
         {
-            string value = _envReader.GetStringValue("TEST");
-            _logger.LogInformation(value);
             return View();
         }
 
