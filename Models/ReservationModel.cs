@@ -28,7 +28,7 @@ namespace tp1_restaurant.Models {
         [DisplayName("Date et heure de réservation")]
         public DateTime DateHeureReservation { get; set; }
 
-        [Required(ErrorMessage = "Le champ Num�ro de téléphone est obligatoire.")]
+        [Required(ErrorMessage = "Le champ Numéro de téléphone est obligatoire.")]
         [DataType(DataType.PhoneNumber, ErrorMessage = "Format de Numéro de téléphone invalide.")]
         [DisplayName("Numéro de téléphone")]
         public string NumeroTelephone { get; set; }
