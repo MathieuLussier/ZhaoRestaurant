@@ -10,7 +10,7 @@ namespace tp1_restaurant.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "Le champ Prénom est obligatoire.")]
-        [MaxLength(100, ErrorMessage = "Le champ Nom à un maximum de 100 charactères.")]
+        [MaxLength(100, ErrorMessage = "Le champ Prénom à un maximum de 100 charactères.")]
         [DisplayName("Prénom")]
         public string Prenom { get; set; }
 
@@ -41,7 +41,7 @@ namespace tp1_restaurant.Models
         [DisplayName("Qualité du service")]
         public int QualiteService { get; set; }
 
-        [MaxLength(300, ErrorMessage = "Le champ Commentaires à un maximum de 300 charactères.")]
+        [MaxLength(500, ErrorMessage = "Le champ Commentaires à un maximum de 300 charactères.")]
         public string Commentaires { get; set; }
     }
 }

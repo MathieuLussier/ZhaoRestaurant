@@ -1,0 +1,88 @@
+﻿@model IEnumerable<tp1_restaurant.Models.Evaluation>
+
+@{
+	ViewData["Title"] = "Évaluations";
+}
+
+<div class="section" data-aos="fade-up">
+	<div class="container-fluid" style="padding: 5rem;">
+		<div class="row section-heading justify-content-center mb-5">
+			<div class="col-md-8 text-center">
+				<h2 class="heading mb-3">Liste des évaluations</h2>
+			</div>
+		</div>
+		<div class="row">
+
+			<div>
+				<a asp-action="Create" asp-controller="Evaluation">Créer une évaluation</a>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th scope="col">#</th>
+							<th scope="col">
+								@Html.DisplayNameFor(model => model.Prenom)
+							</th>
+							<th scope="col">
+								@Html.DisplayNameFor(model => model.Nom)
+							</th>
+							<th scope="col">
+								@Html.DisplayNameFor(model => model.TypeReservation)
+							</th>
+							<th scope="col">
+								@Html.DisplayNameFor(model => model.Courriel)
+							</th>
+							<th scope="col">
+								@Html.DisplayNameFor(model => model.Datevisite)
+							</th>
+							<th scope="col">
+								@Html.DisplayNameFor(model => model.QualiteRepas)
+							</th>
+							<th scope="col">
+								@Html.DisplayNameFor(model => model.QualiteService)
+							</th>
+							<th></th>
+						</tr>
+					</thead>
+					<tbody>
+						@foreach (var item in Model)
+						{
+							<tr>
+								<td scope="row">
+									@Html.DisplayFor(modelItem => item.Id)
+								</td>
+								<td>
+									@Html.DisplayFor(modelItem => item.Prenom)
+								</td>
+								<td>
+									@Html.DisplayFor(modelItem => item.Nom)
+								</td>
+								<td>
+									@Html.DisplayFor(modelItem => item.TypeReservation)
+								</td>
+								<td>
+									@Html.DisplayFor(modelItem => item.Courriel)
+								</td>
+								<td>
+									@Html.DisplayFor(modelItem => item.Datevisite)
+								</td>
+								<td>
+									@Html.DisplayFor(modelItem => item.QualiteRepas)
+								</td>
+								<td>
+									@Html.DisplayFor(modelItem => item.QualiteService)
+								</td>
+								<td>
+									@Html.ActionLink("Modifier", "Edit", new { id = item.Id }) |
+									@Html.ActionLink("Détails", "Details", new { id = item.Id }) |
+									@Html.ActionLink("Supprimer", "Delete", new { id = item.Id })
+								</td>
+							</tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div> <!-- .section -->

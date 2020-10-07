@@ -28,6 +28,7 @@ namespace tp1_restaurant
             services.AddControllersWithViews();
             services.AddTransient(_ => new EnvReader());
             services.AddTransient(_ => new ReservationData());
+            services.AddTransient(_ => new EvaluationData());
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
