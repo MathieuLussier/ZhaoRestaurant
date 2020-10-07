@@ -1,0 +1,83 @@
+@model tp1_restaurant.Models.Evaluation
+
+@{
+	ViewData["Title"] = "Modification";
+}
+
+<div class="section" data-aos="fade-up">
+	<div class="container">
+		<div class="row section-heading justify-content-center mb-5">
+			<div class="col-md-8 text-center">
+				<h2 class="heading mb-3">Modification d'une évaluation</h2>
+			</div>
+		</div>
+
+		<form asp-action="Edit" asp-controller="Evaluation" method="post">
+			<div class="form-row">
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+				@Html.HiddenFor(m => m.Id)
+				<div class="form-group col-md-6">
+					<label asp-for="Prenom" class="control-label"></label>
+					<input asp-for="Prenom" class="form-control" />
+					<span asp-validation-for="Prenom" class="text-danger"></span>
+				</div>
+				<div class="form-group col-md-6">
+					<label asp-for="Nom" class="control-label"></label>
+					<input asp-for="Nom" class="form-control" />
+					<span asp-validation-for="Nom" class="text-danger"></span>
+				</div>
+				<div class="form-group col-md-6">
+					<label asp-for="TypeReservation" class="control-label"></label>
+					<select asp-for="TypeReservation" asp-items="Html.GetEnumSelectList<TypeReservation>()" class="form-control"></select>
+					<span asp-validation-for="TypeReservation" class="text-danger"></span>
+				</div>
+				<div class="form-group col-md-6">
+					<label asp-for="Courriel" class="control-label"></label>
+					<input asp-for="Courriel" class="form-control" />
+					<span asp-validation-for="Courriel" class="text-danger"></span>
+				</div>
+				<div class="form-group col-md-6">
+					<label asp-for="Datevisite" class="control-label"></label>
+					<input asp-for="Datevisite" class="form-control" />
+					<span asp-validation-for="Datevisite" class="text-danger"></span>
+				</div>
+				<div class="form-group col-md-6">
+					<label asp-for="QualiteRepas" class="control-label"></label>
+					<input asp-for="QualiteRepas" class="form-control" list="exempleQualiteRepas" />
+                    <datalist id="exempleQualiteRepas">
+                        <option value="1"></option>
+                        <option value="2"></option>
+                        <option value="3"></option>
+                        <option value="4"></option>
+                        <option value="5"></option>
+                    </datalist>
+					<span asp-validation-for="QualiteRepas" class="text-danger"></span>
+				</div>
+				<div class="form-group col-md-6">
+					<label asp-for="QualiteService" class="control-label"></label>
+					<input asp-for="QualiteService" class="form-control" list="exempleQualiteService" />
+                    <datalist id="exempleQualiteService">
+                        <option value="1"></option>
+                        <option value="2"></option>
+                        <option value="3"></option>
+                        <option value="4"></option>
+                        <option value="5"></option>
+                    </datalist>
+					<span asp-validation-for="QualiteService" class="text-danger"></span>
+				</div>
+                <div class="form-group col-md-6">
+					<label asp-for="Commentaires" class="control-label"></label>
+					<textarea asp-for="Commentaires" rows="4" class="form-control"></textarea>
+					<span asp-validation-for="Commentaires" class="text-danger"></span>
+				</div>
+				<div class="form-group col-md-12">
+					<input type="submit" value="Sauvegarder" class="btn btn-primary" />
+				</div>
+			</div>
+		</form>
+
+		<div>
+			<a asp-action="Index">Retour à la liste</a>
+		</div>
+	</div>
+</div> <!-- .section -->

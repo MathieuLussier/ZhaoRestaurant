@@ -27,6 +27,39 @@ namespace tp1_restaurant.Controllers
             return View(_evaluationData.GetEvaluations());
         }
 
+        [HttpGet("Create")]
+        public IActionResult Create() {
+            return View();
+        }
+
+        [HttpPost("Create")]
+        public IActionResult Create(Evaluation evaluation, [FromQuery] bool redirect) {
+            _evaluationData.CreateEvaluation(evaluation);
+            return RedirectToAction("Index", "Evaluation");
+        }
+
+        [HttpGet("Details")]
+        public IActionResult Details(int id) {
+            return View(_evaluationData.GetEvaluationById(id));
+        }
+
+        [HttpGet("Edit")]
+        public IActionResult Edit(int id) {
+            return View(_evaluationData.GetEvaluationById(id));
+        }
+
+        [HttpPost("Edit")]
+        public IActionResult Edit(Evaluation evaluation) {
+            _evaluationData.EditEvaluation(evaluation);
+            return RedirectToAction("Index", "Evaluation");
+        }
+
+        [HttpGet("Delete")]
+        public IActionResult Delete(int id) {
+            _evaluationData.DeleteEvaluationById(id);
+            return RedirectToAction("Index", "Evaluation");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
