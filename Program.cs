@@ -10,7 +10,7 @@ namespace tp1_restaurant
     {
         public static void Main(string[] args)
         {
-            DotEnv.Config(true, "./.env");
+            DotEnv.Config(true, ".env");
             CreateHostBuilder(args).Build().Run();
         }
 
