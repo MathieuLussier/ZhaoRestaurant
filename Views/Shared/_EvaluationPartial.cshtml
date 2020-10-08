@@ -1,0 +1,15 @@
+@model IEnumerable<tp1_restaurant.Models.Evaluation>
+
+<div class="owl-carousel home-slider-loop-false">
+    @foreach (var item in Model)
+    {
+    <div class="item">
+        <blockquote class="testimonial">
+            <p>&ldquo;@Html.DisplayFor(modelItem => item.Commentaires)&rdquo;</p>
+            <div class="author">
+                <h4>- @Html.DisplayFor(modelItem => item.Prenom) @Html.DisplayFor(modelItem => item.Nom) -</h4>
+            </div>
+        </blockquote>
+    </div>
+    }
+</div>

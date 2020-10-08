@@ -1,0 +1,50 @@
+@model tp1_restaurant.Models.Contact
+
+<form asp-action="Contact" asp-controller="Home" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="row mb-4">
+        <div class="form-group col-md-3">
+            <label asp-for="Prenom" id="contactPrenom" class="label"></label>
+            <div class="form-field-icon-wrap">
+                <span class="icon ion-android-person"></span>
+                <input asp-for="Prenom" class="form-control" id="contactPrenom">
+            </div>
+            <span asp-validation-for="Prenom" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-3">
+            <label asp-for="Nom" id="contactNom" class="label"></label>
+            <div class="form-field-icon-wrap">
+                <span class="icon ion-android-person"></span>
+                <input asp-for="Nom" class="form-control" id="contactNom">
+            </div>
+            <span asp-validation-for="Nom" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-3">
+            <label asp-for="Courriel" id="contactCourriel" class="label"></label>
+            <div class="form-field-icon-wrap">
+                <span class="icon ion-email"></span>
+                <input asp-for="Courriel" class="form-control" id="contactCourriel">
+            </div>
+            <span asp-validation-for="Courriel" class="text-danger"></span>
+        </div>
+        <div class="form-group col-md-3">
+            <label asp-for="NumeroTelephone" id="contactNumeroTelephone" class="label"></label>
+            <div class="form-field-icon-wrap">
+                <span class="icon ion-android-call"></span>
+                <input asp-for="NumeroTelephone" class="form-control" id="contactNumeroTelephone">
+            </div>
+            <span asp-validation-for="NumeroTelephone" class="text-danger"></span>
+        </div>
+
+        <div class="form-group col-md-12">
+            <label asp-for="Message" id="contactMessage" class="label"></label>
+            <textarea asp-for="Message" cols="30" rows="10" class="form-control" id="contactMessage"></textarea>
+            <span asp-validation-for="Message" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <input type="submit" class="btn btn-primary btn-outline-primary btn-block" value="Envoyer message">
+        </div>
+    </div>
+</form>
