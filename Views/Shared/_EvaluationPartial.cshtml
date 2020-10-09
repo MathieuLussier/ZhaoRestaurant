@@ -8,6 +8,8 @@
             <p>&ldquo;@Html.DisplayFor(modelItem => item.Commentaires)&rdquo;</p>
             <div class="author">
                 <h4>- @Html.DisplayFor(modelItem => item.Prenom) @Html.DisplayFor(modelItem => item.Nom) -</h4>
+                <p style="margin: 5px 0 0;">@Html.DisplayNameFor(modelItem => item.QualiteRepas): @Html.DisplayFor(modelItem => item.QualiteRepas)/5</p>
+                <p style="margin: 0;">@Html.DisplayNameFor(modelItem => item.QualiteService): @Html.DisplayFor(modelItem => item.QualiteService)/5</p>
             </div>
         </blockquote>
     </div>
