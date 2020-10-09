@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using tp1_restaurant.Models;
 using tp1_restaurant.Data;
+using tp1_restaurant.Services;
 
 namespace tp1_restaurant.Controllers
 {
@@ -14,12 +15,14 @@ namespace tp1_restaurant.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly EnvReader _envReader;
         private readonly EvaluationData _evaluationData;
+        private readonly EmailService _emailService;
 
-        public HomeController(ILogger<HomeController> logger, [FromServices] EnvReader envReader, [FromServices] EvaluationData evaluationData)
+        public HomeController(ILogger<HomeController> logger, [FromServices] EnvReader envReader, [FromServices] EvaluationData evaluationData, [FromServices] EmailService emailService)
         {
             _logger = logger;
             _envReader = envReader;
             _evaluationData = evaluationData;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -30,7 +33,7 @@ namespace tp1_restaurant.Controllers
                 TempData.Remove("ReservationSuccess");
             }
             if (TempData["contactSuccess"] != null) {
-                ViewBag.ContactSuccess = true;
+                ViewBag.ContactSuccess = TempData["contactSuccess"];
                 TempData.Remove("contactSuccess");
             }
             ViewBag.evaluations = _evaluationData.GetEvaluations();
@@ -39,7 +42,13 @@ namespace tp1_restaurant.Controllers
 
         [HttpPost]
         public IActionResult Contact(Contact contact) {
-            TempData["contactSuccess"] = true;
+            bool isContactSent = _emailService.SendEmail(contact.Courriel, "Formulaire Contact",
+            $"<h1>Nous avons bien reçu votre message de contact !</h1>" +
+            $"<h3>Voici le résumé: </h3>" + 
+            $"<p>{contact.Message}</p>");
+
+            TempData["contactSuccess"] = isContactSent ? true : false;
+
             return Redirect("/#section-contact");
         }
 

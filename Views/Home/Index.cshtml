@@ -404,6 +404,10 @@
 				<div class="alert alert-success" role="alert">
 					Votre message a été envoyé avec succès.
 				</div>
+			} else if (ViewBag.ContactSuccess != null && !ViewBag.ContactSuccess) {
+				<div class="alert alert-danger" role="alert">
+					Une erreur s'est produite pendant l'envoi de courriel.
+				</div>
 			}
 			<div class="col-md-10 p-5 form-wrap">
 				@{await Html.RenderPartialAsync("_ContactPartial");}

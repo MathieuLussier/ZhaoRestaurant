@@ -18,6 +18,7 @@ namespace tp1_restaurant.Models
 
         [Required(ErrorMessage = "Le champ Description de la promotion est obligatoire.")]
         [MaxLength(300, ErrorMessage = "Le champ Description de la promotion à un maximum de 300 charactères.")]
+        [DisplayName("Description")]
         public string DescriptionPromotion { get; set; }
 
         [Required(ErrorMessage = "Le champ Date de début est obligatoire.")]

@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using tp1_restaurant.Data;
+using tp1_restaurant.Services;
 
 namespace tp1_restaurant
 {
@@ -26,9 +27,11 @@ namespace tp1_restaurant
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
-            services.AddTransient(_ => new EnvReader());
-            services.AddTransient(_ => new ReservationData());
-            services.AddTransient(_ => new EvaluationData());
+            services.AddSingleton<EnvReader>(new EnvReader());
+            services.AddTransient<ReservationData>();
+            services.AddTransient<EvaluationData>();
+            services.AddTransient<PromotionData>();
+            services.AddTransient<EmailService>();
             services.AddDistributedMemoryCache();
             services.AddSession(options =>
             {
