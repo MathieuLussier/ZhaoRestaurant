@@ -43,6 +43,16 @@ namespace tp1_restaurant.Controllers
             return Redirect("/#section-contact");
         }
 
+        [HttpGet("DownloadMenu")]
+        public IActionResult DownloadMenu() {
+            return File("~/documents/ZhaoMenu.pdf", "application/pdf");
+        }
+
+        [HttpGet("DownloadVins")]
+        public IActionResult DownloadVins() {
+            return File("~/documents/ZhaoCarteVins.pdf", "application/pdf");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
