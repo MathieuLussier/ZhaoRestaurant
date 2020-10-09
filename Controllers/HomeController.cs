@@ -25,6 +25,10 @@ namespace tp1_restaurant.Controllers
         [HttpGet]
         public IActionResult Index()
         {
+            if (TempData["ReservationSuccess"] != null) {
+                ViewBag.ReservationSuccess = true;
+                TempData.Remove("ReservationSuccess");
+            }
             if (TempData["contactSuccess"] != null) {
                 ViewBag.ContactSuccess = true;
                 TempData.Remove("contactSuccess");

@@ -43,6 +43,7 @@ namespace tp1_restaurant.Controllers
             _reservationData.CreateReservation(reservation);
             if (redirectToHome)
             {
+                TempData["ReservationSuccess"] = true;
                 return Redirect("/#section-reservation");
             }
             return RedirectToAction("Index", "Reservation");

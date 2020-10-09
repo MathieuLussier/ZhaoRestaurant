@@ -387,6 +387,11 @@
 			</div>
 		</div>
 		<div class="row justify-content-center">
+			@if (ViewBag.ReservationSuccess != null && ViewBag.ReservationSuccess) {
+				<div class="alert alert-success" role="alert">
+					Votre réservation a été envoyé avec succès.
+				</div>
+			}
 			<div class="col-md-10 p-5 form-wrap">
 				@{await Html.RenderPartialAsync("_ReservationPartial");}
 			</div>
