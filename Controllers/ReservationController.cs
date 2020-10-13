@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using tp1_restaurant.Data;
 using tp1_restaurant.Models;
+using tp1_restaurant.Services;
 
 namespace tp1_restaurant.Controllers
 {
@@ -18,11 +19,13 @@ namespace tp1_restaurant.Controllers
         private readonly ILogger<ReservationController> _logger;
         private readonly EnvReader _envReader;
         private readonly ReservationData _reservationData;
-        public ReservationController(ILogger<ReservationController> logger, [FromServices] EnvReader envReader, [FromServices] ReservationData reservationData)
+        private readonly EmailService _emailService;
+        public ReservationController(ILogger<ReservationController> logger, [FromServices] EnvReader envReader, [FromServices] ReservationData reservationData, [FromServices] EmailService emailService)
         {
             _logger = logger;
             _envReader = envReader;
             _reservationData = reservationData;
+            _emailService = emailService;
         }
 
         [HttpGet]
@@ -43,7 +46,19 @@ namespace tp1_restaurant.Controllers
             _reservationData.CreateReservation(reservation);
             if (redirectToHome)
             {
-                TempData["ReservationSuccess"] = true;
+                bool isReservationSent = _emailService.SendEmail(reservation.Courriel, "Réservation Zhao Restaurant",
+                $"<h1>Nous avons bien reçu votre réservation !</h1>" +
+                $"<h3>Voici le résumé: </h3>" +
+                $"<p>Prénom: {reservation.Prenom}</p>" +
+                $"<p>Nom: {reservation.Nom}</p>" +
+                $"<p>Type de réservation: {reservation.TypeReservation}</p>" +
+                $"<p>Courriel: {reservation.Courriel}</p>" +
+                $"<p>Date et heure de réservation: {reservation.DateHeureReservation}</p>" +
+                $"<p>Numéro de téléphone: {reservation.NumeroTelephone}</p>" +
+                $"<p>Nombre de personnes: {reservation.NombrePersonnes}</p>"
+                );
+
+                TempData["ReservationSuccess"] = isReservationSent ? true : false;
                 return Redirect("/#section-reservation");
             }
             return RedirectToAction("Index", "Reservation");

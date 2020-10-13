@@ -16,6 +16,20 @@
 			<div>
 				<a asp-action="Create" asp-controller="Evaluation">Créer une évaluation</a>
 			</div>
+			<div class="container">
+				@if (ViewBag.EvaluationSuccess != null && ViewBag.EvaluationSuccess)
+				{
+					<div class="alert alert-success" role="alert">
+						Votre évaluation a été ajouté avec succès.
+					</div>
+				}
+				else if (ViewBag.EvaluationSuccess != null && !ViewBag.EvaluationSuccess)
+				{
+					<div class="alert alert-danger" role="alert">
+						Une erreur s'est produite pendant l'ajout de l'évaluation.
+					</div>
+				}
+			</div>
 			<div class="table-responsive">
 				<table class="table table-hover">
 					<thead>

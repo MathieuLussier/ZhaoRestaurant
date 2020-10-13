@@ -29,7 +29,7 @@ namespace tp1_restaurant.Controllers
         public IActionResult Index()
         {
             if (TempData["ReservationSuccess"] != null) {
-                ViewBag.ReservationSuccess = true;
+                ViewBag.ReservationSuccess = TempData["ReservationSuccess"];
                 TempData.Remove("ReservationSuccess");
             }
             if (TempData["contactSuccess"] != null) {
