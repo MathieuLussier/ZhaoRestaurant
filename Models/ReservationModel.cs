@@ -1,10 +1,13 @@
 using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tp1_restaurant.Models {
-    public class Reservation {
-        public int Id { get; set; }
+    public class Reservation
+    {
+        [Key]
+        public int ReservationId { get; set; }
 
         [Required(ErrorMessage = "Le champ Prénom est obligatoire.")]
         [MaxLength(100, ErrorMessage = "Le champ Prénom à un maximum de 100 charactères.")]
@@ -37,5 +40,7 @@ namespace tp1_restaurant.Models {
         [Range(1, Int32.MaxValue, ErrorMessage = "Le Nombre de personnes doit être de minimum de 1.")]
         [DisplayName("Nombre de personnes")]
         public int NombrePersonnes { get; set; }
+
+        public bool active { get; set; }
     }
 }

@@ -1,12 +1,14 @@
 ﻿using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tp1_restaurant.Models
 {
     public class Promotion
     {
-        public int Id { get; set; }
+        [Key]
+        public int PromotionId { get; set; }
 
         [Required(ErrorMessage = "Le champ Type de promotion est obligatoire.")]
         [DisplayName("Type de promotion")]

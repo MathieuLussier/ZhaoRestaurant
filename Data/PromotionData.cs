@@ -70,11 +70,11 @@ namespace tp1_restaurant.Data
             return promotions;
         }
 
-        public Promotion GetPromotionById(int id)
+        public Promotion GetPromotionById(int PromotionId)
         {
             loadData();
 
-            Promotion promotion = promotions.Find(m => m.Id == id);
+            Promotion promotion = promotions.Find(m => m.PromotionId == PromotionId);
 
             return promotion;
         }
@@ -83,7 +83,7 @@ namespace tp1_restaurant.Data
         {
             loadData();
 
-            Promotion.Id = promotions.Max(m => m.Id) + 1;
+            Promotion.PromotionId = promotions.Max(m => m.PromotionId) + 1;
             promotions.Add(Promotion);
 
             saveData();
@@ -93,17 +93,17 @@ namespace tp1_restaurant.Data
         {
             loadData();
 
-            int index = promotions.FindIndex(m => m.Id == Promotion.Id);
+            int index = promotions.FindIndex(m => m.PromotionId == Promotion.PromotionId);
             promotions[index] = Promotion;
 
             saveData();
         }
 
-        public void DeletePromotionById(int id)
+        public void DeletePromotionById(int PromotionId)
         {
             loadData();
 
-            promotions.RemoveAll(m => m.Id == id);
+            promotions.RemoveAll(m => m.PromotionId == PromotionId);
 
             saveData();
         }

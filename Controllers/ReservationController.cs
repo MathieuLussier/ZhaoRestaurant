@@ -10,6 +10,9 @@ using Microsoft.Extensions.Logging;
 using tp1_restaurant.Data;
 using tp1_restaurant.Models;
 using tp1_restaurant.Services;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace tp1_restaurant.Controllers
 {
@@ -20,18 +23,52 @@ namespace tp1_restaurant.Controllers
         private readonly EnvReader _envReader;
         private readonly ReservationData _reservationData;
         private readonly EmailService _emailService;
-        public ReservationController(ILogger<ReservationController> logger, [FromServices] EnvReader envReader, [FromServices] ReservationData reservationData, [FromServices] EmailService emailService)
+        private readonly ZhaoContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+
+        public ReservationController(ILogger<ReservationController> logger, [FromServices] EnvReader envReader, [FromServices] ReservationData reservationData, [FromServices] EmailService emailService, ZhaoContext context, UserManager<IdentityUser> userManager)
         {
             _logger = logger;
             _envReader = envReader;
             _reservationData = reservationData;
             _emailService = emailService;
+            _context = context;
+            _userManager = userManager;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int? TypeActive)
         {
-            return View(_reservationData.GetReservations());
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            ViewBag.active = TypeActive;
+
+            if (roles.Contains("Administrateur"))
+            {
+                if (TypeActive != null || TypeActive != 0)
+                {
+                    switch (TypeActive)
+                    {
+                        case 0:
+                            return View(await _context.Reservations.ToListAsync());
+                        case 1:
+                            return View(await _context.Reservations.Where(p => p.active == false).ToListAsync());
+                        case 2:
+                            return View(await _context.Reservations.Where(p => p.active == true).ToListAsync());
+                        default:
+                            return View(await _context.Reservations.ToListAsync());
+                    }
+                }
+                else
+                {
+                    return View(await _context.Reservations.ToListAsync());
+                }
+            }
+            else
+            {
+                return View(await _context.Reservations.Where(e => e.Courriel == user.Email).ToListAsync());
+            }
         }
 
         [HttpGet("Create")]
@@ -41,9 +78,13 @@ namespace tp1_restaurant.Controllers
         }
 
         [HttpPost("Create")]
-        public IActionResult Create([FromForm] Reservation reservation, [FromQuery] bool redirectToHome)
+        public async Task<IActionResult> Create([FromForm] Reservation reservation, [FromQuery] bool redirectToHome)
         {
-            _reservationData.CreateReservation(reservation);
+            if (ModelState.IsValid)
+            {
+                _context.Add(reservation);
+                await _context.SaveChangesAsync();
+            }
             if (redirectToHome)
             {
                 bool isReservationSent = _emailService.SendEmail(reservation.Courriel, "Réservation Zhao Restaurant",
@@ -66,35 +107,120 @@ namespace tp1_restaurant.Controllers
 
         [HttpGet("Details")]
         
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int? id)
         {
-            return View(_reservationData.GetReservationById(id));
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var reservation = await _context.Reservations
+                .FirstOrDefaultAsync(m => m.ReservationId == id);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+
+            if (!await isOwnerAsync(reservation))
+            {
+                return Unauthorized();
+            }
+
+            return View(reservation);
         }
 
         [HttpGet("Edit")]
-        public IActionResult Edit(int id)
+        public async Task<IActionResult> Edit(int? id)
         {
-            return View(_reservationData.GetReservationById(id));
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var reservation = await _context.Reservations.FindAsync(id);
+            if (reservation == null)
+            {
+                return NotFound();
+            }
+
+            if (!await isOwnerAsync(reservation))
+            {
+                return Unauthorized();
+            }
+
+            return View(reservation);
         }
 
         [HttpPost("Edit")]
-        public IActionResult Edit([FromForm] Reservation reservation)
+        public async Task<IActionResult> Edit([FromForm] Reservation reservation)
         {
-            _reservationData.EditReservation(reservation);
-            return RedirectToAction("Index", "Reservation");
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var roles = await _userManager.GetRolesAsync(user);
+                try
+                {
+                    if (!await isOwnerAsync(reservation))
+                    {
+                        return Unauthorized();
+                    }
+                    if (!roles.Contains("Administrateur"))
+                        reservation.active = false;
+                    _context.Update(reservation);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!ReservationExists(reservation.ReservationId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(reservation);
         }
 
         [HttpGet("Delete")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _reservationData.DeleteReservationById(id);
-            return RedirectToAction("Index", "Reservation");
+            var reservation = await _context.Reservations.FindAsync(id);
+            if (!await isOwnerAsync(reservation))
+            {
+                return Unauthorized();
+            }
+            _context.Reservations.Remove(reservation);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private bool ReservationExists(int id)
+        {
+            return _context.Reservations.Any(e => e.ReservationId == id);
+        }
+
+        private async Task<bool> isOwnerAsync(Reservation reservation)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if (roles.Contains("Administrateur"))
+                return true;
+
+            if (reservation.Courriel != user.Email)
+                return false;
+
+            return true;
         }
     }
 }

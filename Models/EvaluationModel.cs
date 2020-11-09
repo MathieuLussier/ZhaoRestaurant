@@ -1,13 +1,15 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Storage;
+using System;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace tp1_restaurant.Models
 {
     public class Evaluation
     {
-        public int Id { get; set; }
+        [Key]
+        public int EvaluationId { get; set; }
 
         [Required(ErrorMessage = "Le champ Prénom est obligatoire.")]
         [MaxLength(100, ErrorMessage = "Le champ Prénom à un maximum de 100 charactères.")]

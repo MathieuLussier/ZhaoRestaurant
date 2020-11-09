@@ -5,6 +5,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using tp1_restaurant.Models;
 using tp1_restaurant.Data;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace tp1_restaurant.Controllers
 {
@@ -14,55 +18,120 @@ namespace tp1_restaurant.Controllers
         private readonly ILogger<PromotionController> _logger;
         private readonly EnvReader _envReader;
         private readonly PromotionData _promotionData;
-        public PromotionController(ILogger<PromotionController> logger, [FromServices] EnvReader envReader, [FromServices] PromotionData promotionData)
+        private readonly ZhaoContext _context;
+
+        public PromotionController(ILogger<PromotionController> logger, [FromServices] EnvReader envReader, [FromServices] PromotionData promotionData, ZhaoContext context)
         {
             _logger = logger;
             _envReader = envReader;
             _promotionData = promotionData;
+            _context = context;
         }
+
         [HttpGet]
-        public IActionResult Index()
+        [AllowAnonymous]
+        public async Task<IActionResult> Index(TypePromotion? typePromotion)
         {
-            return View(_promotionData.GetPromotions());
+            if ((typePromotion == null || !Enum.IsDefined(typeof(TypePromotion), typePromotion)) || typePromotion == TypePromotion.Tous)
+            {
+                return View(await _context.Promotions.ToListAsync());
+            }
+            return View(await _context.Promotions.Where(p => p.TypePromotion == typePromotion).ToListAsync());
         }
 
         [HttpGet("Create")]
+        [Authorize(Policy = "AdminOnly")]
         public IActionResult Create() {
             return View();
         }
 
         [HttpPost("Create")]
-        public IActionResult Create(Promotion promotion, [FromQuery] bool redirect) {
-            _promotionData.CreatePromotion(promotion);
+        public async Task<IActionResult> Create(Promotion promotion, [FromQuery] bool redirect) {
+            if (ModelState.IsValid)
+            {
+                _context.Add(promotion);
+                await _context.SaveChangesAsync();
+            }
             return RedirectToAction("Index", "Promotion");
         }
 
         [HttpGet("Details")]
-        public IActionResult Details(int id) {
-            return View(_promotionData.GetPromotionById(id));
+        [AllowAnonymous]
+        public async Task<IActionResult> Details(int? id) {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var promotion = await _context.Promotions
+                .FirstOrDefaultAsync(m => m.PromotionId == id);
+            if (promotion == null)
+            {
+                return NotFound();
+            }
+            return View(promotion);
         }
 
         [HttpGet("Edit")]
-        public IActionResult Edit(int id) {
-            return View(_promotionData.GetPromotionById(id));
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> Edit(int? id) {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var promotion = await _context.Promotions.FindAsync(id);
+            if (promotion == null)
+            {
+                return NotFound();
+            }
+            return View(promotion);
         }
 
         [HttpPost("Edit")]
-        public IActionResult Edit(Promotion promotion) {
-            _promotionData.EditPromotion(promotion);
-            return RedirectToAction("Index", "Promotion");
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> Edit(Promotion promotion) {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(promotion);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!PromotionExists(promotion.PromotionId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(promotion);
         }
 
         [HttpGet("Delete")]
-        public IActionResult Delete(int id) {
-            _promotionData.DeletePromotionById(id);
-            return RedirectToAction("Index", "Promotion");
+        [Authorize(Policy = "AdminOnly")]
+        public async Task<IActionResult> Delete(int id) {
+            var promotion = await _context.Promotions.FindAsync(id);
+            _context.Promotions.Remove(promotion);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private bool PromotionExists(int id)
+        {
+            return _context.Promotions.Any(e => e.PromotionId == id);
         }
     }
 }

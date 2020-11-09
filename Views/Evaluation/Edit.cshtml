@@ -15,7 +15,7 @@
 		<form asp-action="Edit" asp-controller="Evaluation" method="post">
 			<div class="form-row">
 				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-				@Html.HiddenFor(m => m.Id)
+				@Html.HiddenFor(m => m.EvaluationId)
 				<div class="form-group col-md-6">
 					<label asp-for="Prenom" class="control-label"></label>
 					<input asp-for="Prenom" class="form-control" />

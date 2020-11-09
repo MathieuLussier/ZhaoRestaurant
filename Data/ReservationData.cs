@@ -71,11 +71,11 @@ namespace tp1_restaurant.Data
             return reservations;
         }
 
-        public Reservation GetReservationById(int id)
+        public Reservation GetReservationById(int ReservationId)
         {
             loadData();
 
-            Reservation reservation = reservations.Find(m => m.Id == id);
+            Reservation reservation = reservations.Find(m => m.ReservationId == ReservationId);
 
             return reservation;
         }
@@ -84,7 +84,7 @@ namespace tp1_restaurant.Data
         {
             loadData();
 
-            reservation.Id = reservations.Max(m => m.Id) + 1;
+            reservation.ReservationId = reservations.Max(m => m.ReservationId) + 1;
             reservations.Add(reservation);
 
             saveData();
@@ -94,17 +94,17 @@ namespace tp1_restaurant.Data
         {
             loadData();
 
-            int index = reservations.FindIndex(m => m.Id == reservation.Id);
+            int index = reservations.FindIndex(m => m.ReservationId == reservation.ReservationId);
             reservations[index] = reservation;
 
             saveData();
         }
 
-        public void DeleteReservationById(int id)
+        public void DeleteReservationById(int ReservationId)
         {
             loadData();
 
-            reservations.RemoveAll(m => m.Id == id);
+            reservations.RemoveAll(m => m.ReservationId == ReservationId);
 
             saveData();
         } 

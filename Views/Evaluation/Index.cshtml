@@ -64,7 +64,7 @@
 						{
 							<tr>
 								<td scope="row">
-									@Html.DisplayFor(modelItem => item.Id)
+									@Html.DisplayFor(modelItem => item.EvaluationId)
 								</td>
 								<td>
 									@Html.DisplayFor(modelItem => item.Prenom)
@@ -88,9 +88,9 @@
 									@Html.DisplayFor(modelItem => item.QualiteService)
 								</td>
 								<td>
-									@Html.ActionLink("Modifier", "Edit", new { id = item.Id }) |
-									@Html.ActionLink("Détails", "Details", new { id = item.Id }) |
-									@Html.ActionLink("Supprimer", "Delete", new { id = item.Id })
+									@Html.ActionLink("Modifier", "Edit", new { id = item.EvaluationId }) |
+									@Html.ActionLink("Détails", "Details", new { id = item.EvaluationId }) |
+									@Html.ActionLink("Supprimer", "Delete", new { id = item.EvaluationId })
 								</td>
 							</tr>
 						}

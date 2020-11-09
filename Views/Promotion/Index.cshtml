@@ -1,4 +1,6 @@
 ﻿@model IEnumerable<tp1_restaurant.Models.Promotion>
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService
 
 @{
 	ViewData["Title"] = "Promotions";
@@ -13,58 +15,83 @@
 		</div>
 		<div class="row">
 
+			@if ((await AuthorizationService.AuthorizeAsync(User, "AdminOnly")).Succeeded)
+			{
+				<div>
+					<a asp-action="Create" asp-controller="Promotion">Créer une promotion</a>
+				</div>
+			}
 			<div>
-				<a asp-action="Create" asp-controller="Promotion">Créer une promotion</a>
+				<form asp-action="Index" asp-controller="Promotion" id="TypePromotionForm" method="get">
+					@Html.DropDownList("TypePromotion", Html.GetEnumSelectList<TypePromotion>(), new { @class = "form-control", @onchange = "submitTypePromotionForm();" })
+				</form>
 			</div>
-			<div class="table-responsive">
-				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th scope="col">#</th>
-							<th scope="col">
-								@Html.DisplayNameFor(model => model.TypePromotion)
-							</th>
-							<th scope="col">
-								@Html.DisplayNameFor(model => model.TauxApplicable)
-							</th>
-							<th scope="col">
-								@Html.DisplayNameFor(model => model.DateDebut)
-							</th>
-							<th scope="col">
-								@Html.DisplayNameFor(model => model.DateFin)
-							</th>
-							<th></th>
-						</tr>
-					</thead>
-					<tbody>
-						@foreach (var item in Model)
-						{
+			@section Scripts
+{
+				<script>
+					function submitTypePromotionForm() {
+						document.getElementById('TypePromotionForm').submit();
+					}
+				</script>
+			}
+				<div class="table-responsive">
+					<table class="table table-hover">
+						<thead>
 							<tr>
-								<td scope="row">
-									@Html.DisplayFor(modelItem => item.Id)
-								</td>
-								<td>
-									@Html.DisplayFor(modelItem => item.TypePromotion)
-								</td>
-								<td>
-									@Html.DisplayFor(modelItem => item.TauxApplicable)
-								</td>
-								<td>
-									@Html.DisplayFor(modelItem => item.DateDebut)
-								</td>
-								<td>
-									@Html.DisplayFor(modelItem => item.DateFin)
-								</td>
-								<td>
-									@Html.ActionLink("Modifier", "Edit", new { id = item.Id }) |
-									@Html.ActionLink("Détails", "Details", new { id = item.Id }) |
-									@Html.ActionLink("Supprimer", "Delete", new { id = item.Id })
-								</td>
+								<th scope="col">#</th>
+								<th scope="col">
+									@Html.DisplayNameFor(model => model.TypePromotion)
+								</th>
+								<th scope="col">
+									@Html.DisplayNameFor(model => model.TauxApplicable)
+								</th>
+								<th scope="col">
+									@Html.DisplayNameFor(model => model.DateDebut)
+								</th>
+								<th scope="col">
+									@Html.DisplayNameFor(model => model.DateFin)
+								</th>
+								<th></th>
 							</tr>
-						}
-					</tbody>
-				</table>
+						</thead>
+						<tbody>
+							@foreach (var item in Model)
+							{
+								<tr>
+									<td scope="row">
+										@Html.DisplayFor(modelItem => item.PromotionId)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.TypePromotion)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.TauxApplicable)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.DateDebut)
+									</td>
+									<td>
+										@Html.DisplayFor(modelItem => item.DateFin)
+									</td>
+									@if ((await AuthorizationService.AuthorizeAsync(User, "AdminOnly")).Succeeded)
+									{
+										<td>
+											@Html.ActionLink("Modifier", "Edit", new { id = item.PromotionId })|
+											@Html.ActionLink("Détails", "Details", new { id = item.PromotionId }) |
+											@Html.ActionLink("Supprimer", "Delete", new { id = item.PromotionId })
+										</td>
+									}
+									else
+									{
+										<td>
+											@Html.ActionLink("Détails", "Details", new { id = item.PromotionId })
+										</td>
+									}
+								</tr>
+							}
+						</tbody>
+					</table>
+				</div>
 			</div>
-		</div>
 	</div>
 </div> <!-- .section -->

@@ -73,11 +73,11 @@ namespace tp1_restaurant.Data
             return evaluations;
         }
 
-        public Evaluation GetEvaluationById(int id)
+        public Evaluation GetEvaluationById(int EvaluationId)
         {
             loadData();
 
-            Evaluation evaluation = evaluations.Find(m => m.Id == id);
+            Evaluation evaluation = evaluations.Find(m => m.EvaluationId == EvaluationId);
 
             return evaluation;
         }
@@ -86,7 +86,7 @@ namespace tp1_restaurant.Data
         {
             loadData();
 
-            evaluation.Id = evaluations.Max(m => m.Id) + 1;
+            evaluation.EvaluationId = evaluations.Max(m => m.EvaluationId) + 1;
             evaluations.Add(evaluation);
 
             saveData();
@@ -96,17 +96,17 @@ namespace tp1_restaurant.Data
         {
             loadData();
 
-            int index = evaluations.FindIndex(m => m.Id == evaluation.Id);
+            int index = evaluations.FindIndex(m => m.EvaluationId == evaluation.EvaluationId);
             evaluations[index] = evaluation;
 
             saveData();
         }
 
-        public void DeleteEvaluationById(int id)
+        public void DeleteEvaluationById(int EvaluationId)
         {
             loadData();
 
-            evaluations.RemoveAll(m => m.Id == id);
+            evaluations.RemoveAll(m => m.EvaluationId == EvaluationId);
 
             saveData();
         }

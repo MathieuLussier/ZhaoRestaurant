@@ -6,10 +6,12 @@ using Microsoft.Extensions.Logging;
 using tp1_restaurant.Models;
 using tp1_restaurant.Data;
 using tp1_restaurant.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace tp1_restaurant.Controllers
 {
     [Route("/")]
+    [AllowAnonymous]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

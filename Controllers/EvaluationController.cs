@@ -1,7 +1,14 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 using dotenv.net.Utilities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using tp1_restaurant.Data;
 using tp1_restaurant.Models;
@@ -16,23 +23,39 @@ namespace tp1_restaurant.Controllers
         private readonly EnvReader _envReader;
         private readonly EvaluationData _evaluationData;
         private readonly EmailService _emailService;
-        public EvaluationController(ILogger<EvaluationController> logger, [FromServices] EnvReader envReader, [FromServices] EvaluationData evaluationData, [FromServices] EmailService emailService)
+        private readonly ZhaoContext _context;
+        private readonly UserManager<IdentityUser> _userManager;
+
+
+        public EvaluationController(ILogger<EvaluationController> logger, [FromServices] EnvReader envReader, [FromServices] EvaluationData evaluationData, [FromServices] EmailService emailService, ZhaoContext context, UserManager<IdentityUser> userManager)
         {
             _logger = logger;
             _envReader = envReader;
             _evaluationData = evaluationData;
             _emailService = emailService;
+            _context = context;
+            _userManager = userManager;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             if (TempData["EvaluationSuccess"] != null)
             {
                 ViewBag.EvaluationSuccess = TempData["EvaluationSuccess"];
                 TempData.Remove("EvaluationSuccess");
             }
-            return View(_evaluationData.GetEvaluations());
+
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if (roles.Contains("Administrateur"))
+            {
+                return View(await _context.Evaluations.ToListAsync());
+            } else
+            {
+                return View(await _context.Evaluations.Where(e => e.Courriel == user.Email).ToListAsync());
+            }
         }
 
         [HttpGet("Create")]
@@ -41,8 +64,12 @@ namespace tp1_restaurant.Controllers
         }
 
         [HttpPost("Create")]
-        public IActionResult Create(Evaluation evaluation, [FromQuery] bool redirect) {
-            _evaluationData.CreateEvaluation(evaluation);
+        public async Task<IActionResult> Create(Evaluation evaluation, [FromQuery] bool redirect) {
+            if (ModelState.IsValid)
+            {
+                _context.Add(evaluation);
+                await _context.SaveChangesAsync();
+            }
             bool isEvaluationSent = _emailService.SendEmail(evaluation.Courriel, "Évaluation Zhao Restaurant",
                 $"<h1>Nous avons bien reçu votre évaluation !</h1>" +
                 $"<h3>Voici le résumé: </h3>" +
@@ -60,31 +87,113 @@ namespace tp1_restaurant.Controllers
         }
 
         [HttpGet("Details")]
-        public IActionResult Details(int id) {
-            return View(_evaluationData.GetEvaluationById(id));
+        public async Task<IActionResult> Details(int? id) {
+
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var evaluation = await _context.Evaluations
+                .FirstOrDefaultAsync(m => m.EvaluationId == id);
+            if (evaluation == null)
+            {
+                return NotFound();
+            }
+
+            if (!await isOwnerAsync(evaluation))
+            {
+                return Unauthorized();
+            }
+
+            return View(evaluation);
         }
 
         [HttpGet("Edit")]
-        public IActionResult Edit(int id) {
-            return View(_evaluationData.GetEvaluationById(id));
+        public async Task<IActionResult> Edit(int? id) {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var evaluation = await _context.Evaluations.FindAsync(id);
+            if (evaluation == null)
+            {
+                return NotFound();
+            }
+
+            if (!await isOwnerAsync(evaluation))
+            {
+                return Unauthorized();
+            }
+
+            return View(evaluation);
         }
 
         [HttpPost("Edit")]
-        public IActionResult Edit(Evaluation evaluation) {
-            _evaluationData.EditEvaluation(evaluation);
-            return RedirectToAction("Index", "Evaluation");
+        public async Task<IActionResult> Edit(Evaluation evaluation) {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    if (!await isOwnerAsync(evaluation))
+                    {
+                        return Unauthorized();
+                    }
+                    _context.Update(evaluation);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!EvaluationExists(evaluation.EvaluationId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(evaluation);
         }
 
         [HttpGet("Delete")]
-        public IActionResult Delete(int id) {
-            _evaluationData.DeleteEvaluationById(id);
-            return RedirectToAction("Index", "Evaluation");
+        public async Task<IActionResult> Delete(int id) {
+            var evaluation = await _context.Evaluations.FindAsync(id);
+            if (!await isOwnerAsync(evaluation))
+            {
+                return Unauthorized();
+            }
+            _context.Evaluations.Remove(evaluation);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private bool EvaluationExists(int id)
+        {
+            return _context.Evaluations.Any(e => e.EvaluationId == id);
+        }
+
+        private async Task<bool> isOwnerAsync(Evaluation evaluation)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var roles = await _userManager.GetRolesAsync(user);
+
+            if (roles.Contains("Administrateur"))
+                return true;
+
+            if (evaluation.Courriel != user.Email)
+                return false;
+            
+            return true;
         }
     }
 }
